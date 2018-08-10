@@ -6,6 +6,7 @@ import shutil
 import signal
 import datetime
 from random import randint
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
@@ -21,10 +22,13 @@ def init_browser(url):
     browser = webdriver.Chrome("./driver/chromedriver",chrome_options=options)
     browser.implicitly_wait(10)
     browser.get(url)
+    return browser
 
 def doDownload():
 	url = 'https://tokopedia.com/gadzilastore'
-	init_browser(url)
+	browser = init_browser(url)
+	
+
 
 
 def main():
