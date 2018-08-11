@@ -12,9 +12,9 @@ def main():
 		print("=============================================")
 		input = raw_input(">")
 		if( input == '1' ):
-			download.doDownload()
+			download.get_product()
 		elif( input == '2'):
-			doUpload()
+			upload()
 		else:
 			print('No Match')
 
