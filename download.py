@@ -1,23 +1,24 @@
+import os
+import re
+import sys
+import csv
+import math
+import json
+import time
+import datetime
+import signal
+import shutil
 import requests
+import urlparse
+import mysql.connector
+from random import randint
 from bs4 import BeautifulSoup
 from selenium import webdriver
-import signal
-import csv
-from selenium.webdriver.common.by import By
-import os,sys, time, inspect,datetime
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
-from random import randint
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
-from fake_useragent import UserAgent
-import shutil
-from tempfile import NamedTemporaryFile
-import mysql.connector
-import json
-import re
-import math
 
 def init_browser(headless=True):
 	print('+ Init Browser')
@@ -130,21 +131,18 @@ def get_product():
 	port="8989"
 	url = 'https://tokopedia.com/gadzilastore'
 	#STARTING PROGRAM
-	try:
-		browser = init_browser()
-		print('=====INITIALIZING====')
-		goto_URL(browser,url)
-		while(True):
-			product_list = get_product_list(browser)
-			add_dbProduct(product_list,host,user,passwd,database,port)
-			resp = do_pagination(browser,'next')
-			print("[+] Next Page : {}".format(resp))
-			if resp in ['ERROR','NONE']:
-				print('[-] PROGRAM STOP')
-				break
-		browser.quit()
-	except Exception as e:
-		browser.quit()
+	browser = init_browser(False)
+	print('=====INITIALIZING====')
+	goto_URL(browser,url)
+	while(True):
+		product_list = get_product_list(browser)
+		add_dbProduct(product_list,host,user,passwd,database,port)
+		resp = do_pagination(browser,'next')
+		print("[+] Next Page : {}".format(resp))
+		if resp in ['ERROR','NONE']:
+			print('[-] PROGRAM STOP')
+			break
+	browser.quit()
 
 if __name__ == '__main__':
 	get_product()

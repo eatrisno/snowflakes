@@ -1,4 +1,4 @@
-import download_tokopedia as download
+import download
 
 def doUpload():
 	print("comming soon")
