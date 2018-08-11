@@ -19,6 +19,7 @@ def init_browser(url):
     print('+ Init Browser')
     options = webdriver.ChromeOptions()
 	# options.add_argument("headless")
+	options.add_argument('user-data-dir=./data') #Your google chrome setting
     browser = webdriver.Chrome("./driver/chromedriver",chrome_options=options)
     browser.implicitly_wait(10)
     browser.get(url)
@@ -27,8 +28,6 @@ def init_browser(url):
 def doDownload():
 	url = 'https://tokopedia.com/gadzilastore'
 	browser = init_browser(url)
-	
-
 
 
 def main():
