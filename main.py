@@ -3,7 +3,12 @@ import getList as mod1
 import getDetail as mod2
 
 def doUpload(mode):
-	print("comming soon")
+	print("Comming soon..")
+	x=raw_input('Press any key to continue.')
+
+def doUpdate(mode):
+	print("Comming soon..")
+	x=raw_input('Press any key to continue.')
 
 def main():
 	root = False
@@ -14,6 +19,7 @@ def main():
 		print("| 1. Get List ")
 		print("| 2. Get Detail ")
 		print("| 3. Upload ")
+		print("| 4. Update ")
 		print("| 0. Exit ")
 		print("=============================================")
 		input = raw_input(">")
@@ -23,6 +29,8 @@ def main():
 		elif( input == '2'):
 			mod2.run(root)
 		elif( input == '3'):
+			doUpload(root)
+		elif( input == '4'):
 			doUpload(root)
 		elif( input == '0'):
 			print('Bye..')

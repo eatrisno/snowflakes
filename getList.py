@@ -20,8 +20,10 @@ def do_pagination(browser,direction):
 	if pagination_count > 0:
 		for page in pagination:
 			icon = ord(page.string)
+			#171 code prev icon to ascii
 			if (icon == 171):
 				curr = 'prev'
+			#187 code next icon to ascii
 			elif(icon == 187):
 				curr = 'next'
 			if curr == direction.lower():

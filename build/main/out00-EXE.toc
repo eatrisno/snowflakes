@@ -1,5 +1,5 @@
 ('/Volumes/caddy/liko/snowflakes/build/main/main',
- False,
+ True,
  False,
  True,
  None,
@@ -40,7 +40,7 @@
  [],
  False,
  False,
- 1534056541,
- [('runw',
-   '/usr/local/lib/python2.7/site-packages/PyInstaller/bootloader/Darwin-64bit/runw',
+ 1534079665,
+ [('run',
+   '/usr/local/lib/python2.7/site-packages/PyInstaller/bootloader/Darwin-64bit/run',
    'EXECUTABLE')])
