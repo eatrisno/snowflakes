@@ -7,7 +7,6 @@ def doUpload(mode):
 
 def main():
 	root = False
-	input = ''
 	while(True):
 		os.system('clear')
 		print("Welcome To SnowFlakes APP")

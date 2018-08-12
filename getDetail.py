@@ -14,33 +14,6 @@ def add_dbProduct(datas,mydb):
 	mycursor.execute(sql)
 	mydb.commit()
 	print("[+] DATA {} record inserted.".format(mycursor.rowcount))
-	
-def get_product_list(browser):
-	resp = []
-	print('[+] Load Page | {}'.format(browser.current_url))
-	while(True):
-		html = BeautifulSoup(browser.page_source, 'html.parser')
-		product_list = html.find_all(itemprop="itemListElement")
-		product_count = len(product_list)
-		if(product_count > 0):
-			break
-		else:
-			time.sleep(5)
-			print('[/] Waiting Page Loaded | item count :{}'.format(product_count))
-	shop_name= html.find(id='shop_name').get('value')
-	for i, product in enumerate(product_list):
-		url_str= product.find('a').get('href')
-		o = urlparse.urlparse(url_str)
-		url = o.scheme + "://" + o.netloc + o.path
-		data_pid= product.get('data-pid')
-		data_cid= product.get('data-cid')
-		image= product.find(itemprop="image").get('src')
-		name= product.find(class_='name').string.strip()
-		price_str= product.find(class_='price').string.strip()
-		price=int(filter(str.isdigit,str(price_str)))
-		resp.append([shop_name,data_pid,data_cid,name,price,url,image])
-	print('[+] {} Produk Berhasil diambil.'.format(len(resp)))
-	return resp
 
 def get_variant(browser):
 	variant_data = browser.execute_script('return product_variant')
@@ -121,47 +94,17 @@ def add_dbProduct(data,table_detail,mydb):
 	mydb.commit()
 	print("[+] Status Updated | Row affected {}.".format(mycursor.rowcount))
 
-def get_product_list(table_data,table_detail,mydb):
+def get_product_listDB(table_data,table_detail,mydb):
 	mycursor = mydb.cursor()
 	date = (datetime.datetime.now().strftime("%Y-%m-%d"))
-	# sql = "select `date`,`data_pid`,`shop_name`,`url`,`name` from {} where date = '{}'".format(database_table,date)
 	sql = "select `date`,`data_pid`,`shop_name`,`url`,`name` from {} where (data_pid) not in (select data_pid from {}) and date ='{}'".format(table_data,table_detail,date)
-	#select `date`,`data_pid`,`shop_name`,`url`,`name`,`` from product_detail where status = '0' and date = '{}'
 	mycursor.execute(sql)
 	myresult = mycursor.fetchall()
 	print('[+] get {} product to get detail'.format(len(myresult)))
 	return myresult
 
 def run(root):
-	try:
-		browser = init_browser(root)
-		host="pixel.mynaworks.com"
-		user="dev"
-		passwd="dev"
-		database="sampleDB"
-		port="8989"
-		table_data = 'product_data'
-		table_detail = 'product_detail'
-		mydb=mysql.connector.connect(
-			host=host,
-			user=user,
-			passwd=passwd,
-			database=database,
-			port=port)
-		datas = get_product_list(table_data,table_detail,mydb)
-		for row in datas:
-			date,data_pid,shop_name,url,name = row
-			print('[+] {} - {}'.format(data_pid,name))
-			print('[+] {}'.format(url))
-			goto_URL(browser,url)
-			resp = get_page_detail(browser)
-			add_dbProduct(resp,table_detail,mydb)
-	except Exception as e:
-		print e
-	browser.quit()
-	
-def main():
-	browser = init_browser(False)
+	print('=====INITIALIZING====')
 	host="pixel.mynaworks.com"
 	user="dev"
 	passwd="dev"
@@ -175,15 +118,30 @@ def main():
 		passwd=passwd,
 		database=database,
 		port=port)
-	datas = get_product_list(table_data,table_detail,mydb)
-	for row in datas:
-		date,data_pid,shop_name,url,name = row
-		print('[+] {} - {}'.format(data_pid,name))
-		print('[+] URL : {}'.format(url))
-		goto_URL(browser,url)
-		resp = get_page_detail(browser)
-		add_dbProduct(resp,table_detail,mydb)
-	browser.quit()
+	print('[+] OK')
+	print('======STARTING=====')
+	datas = get_product_listDB(table_data,table_detail,mydb)
+	if(len(datas) > 0):
+		try:
+			browser = init_browser(root)
+			for row in datas:
+				date,data_pid,shop_name,url,name = row
+				print('[+] {} - {}'.format(data_pid,name))
+				print('[+] {}'.format(url))
+				goto_URL(browser,url)
+				resp = get_page_detail(browser)
+				add_dbProduct(resp,table_detail,mydb)
+		except Exception as e:
+			print e
+		browser.quit()
+	else:
+		print('[-] No data to get detail | get deta first.')
+	print("=====FINISH====")
+	x = raw_input('Press any key to continue')
+	
+def main():
+	root = False
+	run(root)
 
 if __name__ == '__main__':
 	name()

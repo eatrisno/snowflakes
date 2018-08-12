@@ -57,8 +57,8 @@ def get_product_list(browser):
 		if(product_count > 0):
 			break
 		else:
-			time.sleep(5)
-			print('[/] Waiting Page Loaded | item count :{}'.format(product_count))
+			time.sleep(10)
+			print('[/] Waiting Page Loaded | Wait Product Loaded : {}'.format(product_count))
 	shop_name= html.find(id='shop_name').get('value')
 	for i, product in enumerate(product_list):
 		url_str= product.find('a').get('href')
@@ -76,6 +76,7 @@ def get_product_list(browser):
 
 def run(root):
 	#INITIALIZING
+	print('=====INITIALIZING====')
 	host="pixel.mynaworks.com"
 	user="dev"
 	passwd="dev"
@@ -89,10 +90,11 @@ def run(root):
 		passwd=passwd,
 		database=database,
 		port=port)
-	#STARTING PROGRAM
+
+	browser = init_browser(root)
+	print('[+] OK')
+	print('======STARTING=====')
 	try:
-		browser = init_browser(root)
-		print('=====INITIALIZING====')
 		goto_URL(browser,url)
 		while(True):
 			product_list = get_product_list(browser)
@@ -105,35 +107,12 @@ def run(root):
 	except Exception as e:
 		print e
 	browser.quit()
+	print("=====FINISH====")
+	x = raw_input('Press any key to continue')
 
 def main():
-	#INITIALIZING
-	host="pixel.mynaworks.com"
-	user="dev"
-	passwd="dev"
-	database="sampleDB"
-	database_table = 'product_data'
-	port="8989"
-	url = 'https://tokopedia.com/gadzilastore'
-	mydb=mysql.connector.connect(
-		host=cHostname,
-		user=cUsername,
-		passwd=cPassword,
-		database=cDatabase,
-		port=cPort)
-	#STARTING PROGRAM
-	browser = init_browser(False)
-	print('=====INITIALIZING====')
-	goto_URL(browser,url)
-	while(True):
-		product_list = get_product_list(browser)
-		add_dbProduct(product_list,database_table,mydb)
-		resp = do_pagination(browser,'next')
-		print("[+] Next Page : {}".format(resp))
-		if resp in ['ERROR','NONE']:
-			print('[-] PROGRAM STOP')
-			break
-	browser.quit()
+	boot = False
+	run(boot)
 
 
 if __name__ == '__main__':
