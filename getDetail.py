@@ -1,20 +1,13 @@
 from helper import *
 
-def add_dbProduct(datas,cHostname,cUsername,cPassword,cDatabase,cPort="3306"):
-	mydb=mysql.connector.connect(
-	host=cHostname,
-	user=cUsername,
-	passwd=cPassword,
-	database=cDatabase,
-	port=cPort
-	)
+def add_dbProduct(datas,mydb):
 	mycursor = mydb.cursor()
-	sql_header = "INSERT INTO `product_data` (`shop_name`,`data-pid`, `data-cid`, `name`, `url`, `image`, `price`, `status`) VALUES "
+	print("[+] Jumlah Data {} | Input Product".format(len(datas)))
+	sql_header = "INSERT INTO `product_data` (`shop_name`,`data-pid`, `data-cid`, `name`, `url`, `image`, `price`) VALUES "
 	mysql_rows = []
-	for row in datas:
-		status = 0
+	for i , row in enumerate(datas):
 		shop_name,data_pid,data_cid,name,price,url,image = row
-		mysql_rows.append("('{}','{}','{}','{}','{}','{}','{}','{}')".format(shop_name,data_pid,data_cid,name,url,image,price,status))
+		mysql_rows.append("('{}','{}','{}','{}','{}','{}','{}')".format(shop_name,data_pid,data_cid,name,url,image,price))
 	sql_footer = " ON DUPLICATE KEY UPDATE `name`=VALUES(`name`),`data-cid`=VALUES(`data-cid`),`url`=VALUES(`url`),`price`=VALUES(`price`)"
 	sql_body=','.join(mysql_rows)
 	sql = sql_header+sql_body+sql_footer
@@ -46,7 +39,7 @@ def get_product_list(browser):
 		price_str= product.find(class_='price').string.strip()
 		price=int(filter(str.isdigit,str(price_str)))
 		resp.append([shop_name,data_pid,data_cid,name,price,url,image])
-	print('[+] Jumlah Produk {} | {} Produk Berhasil diambil.'.format(len(product_list),len(resp)))
+	print('[+] {} Produk Berhasil diambil.'.format(len(resp)))
 	return resp
 
 def get_variant(browser):
@@ -65,6 +58,7 @@ def get_variant(browser):
 			value = x['value']
 			resp[id]['value']=value
 	return resp
+
 def get_video(html):
 	video_tmp = html.find_all(class_='rvm-video-display--item')
 	resp = []
@@ -88,66 +82,54 @@ def get_page_detail(browser):
 	video = get_video(html)
 	return product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_description,video,variant,product_weight
 
-def add_dbProduct(data,database_table,cHostname,cUsername,cPassword,cDatabase,cPort="3306"):
-	mydb=mysql.connector.connect(
-	host=cHostname,
-	user=cUsername,
-	passwd=cPassword,
-	database=cDatabase,
-	port=cPort
-	)
+def add_dbProduct(data,table_detail,mydb):
 	mycursor = mydb.cursor()
 	sql_header = """INSERT INTO `{}` (
-	`data_pid`, 
-	`image`, 
-	`name`, 
-	`etalase`, 
-	`min_buy`, 
-	`price`, 
-	`description`, 
-	`video`, 
-	`variant`, 
-	`weight`) VALUES """.format(database_table)
+		`data_pid`, 
+		`image`, 
+		`name`, 
+		`etalase`, 
+		`min_buy`, 
+		`price`, 
+		`description`, 
+		`video`, 
+		`variant`, 
+		`weight`) VALUES """.format(table_detail)
 	mysql_rows = []
 	product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_description,product_video,product_variant,product_weight = data
 	mysql_rows.append("('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"%(product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_description,product_video,product_variant,product_weight))
 	sql_footer = """ ON DUPLICATE KEY UPDATE
-	`data_pid`=VALUES(`data_pid`), 
-	`image`=VALUES(`image`), 
-	`name`=VALUES(`name`), 
-	`etalase`=VALUES(`etalase`), 
-	`min_buy`=VALUES(`min_buy`), 
-	`price`=VALUES(`price`), 
-	`description`=VALUES(`description`), 
-	`video`=VALUES(`video`), 
-	`variant`=VALUES(`variant`), 
-	`weight`=VALUES(`weight`)"""
+		`data_pid`=VALUES(`data_pid`), 
+		`image`=VALUES(`image`), 
+		`name`=VALUES(`name`), 
+		`etalase`=VALUES(`etalase`), 
+		`min_buy`=VALUES(`min_buy`), 
+		`price`=VALUES(`price`), 
+		`description`=VALUES(`description`), 
+		`video`=VALUES(`video`), 
+		`variant`=VALUES(`variant`), 
+		`weight`=VALUES(`weight`)"""
 	sql_body=','.join(mysql_rows)
 	sql = sql_header+sql_body+sql_footer
 	mycursor.execute(sql)
 	mydb.commit()
-	print("[+] DATA {} record inserted.".format(mycursor.rowcount))
+	print("[+] {} record inserted.".format(mycursor.rowcount))
 	#UPDATE STATUS # 0 not uploaded # 1 uploaded # -1 removed
 	updated_status='1'
-	sql_update = ("UPDATE %s SET `status`='%s' WHERE `data_pid`='%s'"%(database_table,updated_status,product_id))
+	sql_update = ("UPDATE %s SET `status`='%s' WHERE `data_pid`='%s'"%(table_detail,updated_status,product_id))
 	mycursor.execute(sql_update)
 	mydb.commit()
-	print("[+] Status Updated | {}.".format(mycursor.rowcount))
+	print("[+] Status Updated | Row affected {}.".format(mycursor.rowcount))
 
-def get_product_list(database_table,cHostname,cUsername,cPassword,cDatabase,cPort="3306"):
-	mydb=mysql.connector.connect(
-	host=cHostname,
-	user=cUsername,
-	passwd=cPassword,
-	database=cDatabase,
-	port=cPort
-	)
+def get_product_list(table_data,table_detail,mydb):
 	mycursor = mydb.cursor()
 	date = (datetime.datetime.now().strftime("%Y-%m-%d"))
-	sql = "select `date`,`data_pid`,`shop_name`,`url`,`name` from {} where `status` = '0' and date = '{}'".format(database_table,date)
+	# sql = "select `date`,`data_pid`,`shop_name`,`url`,`name` from {} where date = '{}'".format(database_table,date)
+	sql = "select `date`,`data_pid`,`shop_name`,`url`,`name` from {} where (data_pid) not in (select data_pid from {}) and date ='{}'".format(table_data,table_detail,date)
 	#select `date`,`data_pid`,`shop_name`,`url`,`name`,`` from product_detail where status = '0' and date = '{}'
 	mycursor.execute(sql)
 	myresult = mycursor.fetchall()
+	print('[+] get {} product to get detail'.format(len(myresult)))
 	return myresult
 
 def run(root):
@@ -158,13 +140,22 @@ def run(root):
 		passwd="dev"
 		database="sampleDB"
 		port="8989"
-		datas = get_product_list('product_data',host,user,passwd,database,port)
+		table_data = 'product_data'
+		table_detail = 'product_detail'
+		mydb=mysql.connector.connect(
+			host=host,
+			user=user,
+			passwd=passwd,
+			database=database,
+			port=port)
+		datas = get_product_list(table_data,table_detail,mydb)
 		for row in datas:
 			date,data_pid,shop_name,url,name = row
-			print('[+] {}-{} | {}'.format(data_pid,name,url))
+			print('[+] {} - {}'.format(data_pid,name))
+			print('[+] {}'.format(url))
 			goto_URL(browser,url)
 			resp = get_page_detail(browser)
-			add_dbProduct(resp,'product_detail',host,user,passwd,database,port)
+			add_dbProduct(resp,table_detail,mydb)
 	except Exception as e:
 		print e
 	browser.quit()
@@ -176,13 +167,22 @@ def main():
 	passwd="dev"
 	database="sampleDB"
 	port="8989"
-	datas = get_product_list('product_data',host,user,passwd,database,port)
+	table_data = 'product_data'
+	table_detail = 'product_detail'
+	mydb=mysql.connector.connect(
+		host=host,
+		user=user,
+		passwd=passwd,
+		database=database,
+		port=port)
+	datas = get_product_list(table_data,table_detail,mydb)
 	for row in datas:
 		date,data_pid,shop_name,url,name = row
-		print('[+] {}-{} | {}'.format(data_pid,name,url))
+		print('[+] {} - {}'.format(data_pid,name))
+		print('[+] URL : {}'.format(url))
 		goto_URL(browser,url)
 		resp = get_page_detail(browser)
-		add_dbProduct(resp,'product_detail',host,user,passwd,database,port)
+		add_dbProduct(resp,table_detail,mydb)
 	browser.quit()
 
 if __name__ == '__main__':

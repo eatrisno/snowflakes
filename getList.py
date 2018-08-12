@@ -32,14 +32,7 @@ def do_pagination(browser,direction):
 	else:
 		return 'ERROR'
 
-def add_dbProduct(datas,database_table,cHostname,cUsername,cPassword,cDatabase,cPort="3306"):
-	mydb=mysql.connector.connect(
-	host=cHostname,
-	user=cUsername,
-	passwd=cPassword,
-	database=cDatabase,
-	port=cPort
-	)
+def add_dbProduct(datas,database_table,mydb):
 	mycursor = mydb.cursor()
 	sql_header = "INSERT INTO `{}` (`shop_name`,`date`,`data_pid`, `data_cid`, `name`, `url`, `image`, `price`) VALUES ".format(database_table)
 	mysql_rows = []
@@ -82,22 +75,28 @@ def get_product_list(browser):
 	return resp
 
 def run(root):
+	#INITIALIZING
+	host="pixel.mynaworks.com"
+	user="dev"
+	passwd="dev"
+	database="sampleDB"
+	port="8989"
+	database_table = 'product_data'
+	url = 'https://tokopedia.com/gadzilastore'
+	mydb=mysql.connector.connect(
+		host=host,
+		user=user,
+		passwd=passwd,
+		database=database,
+		port=port)
+	#STARTING PROGRAM
 	try:
-		#INITIALIZING
-		host="pixel.mynaworks.com"
-		user="dev"
-		passwd="dev"
-		database="sampleDB"
-		database_table = 'product_data'
-		port="8989"
-		url = 'https://tokopedia.com/gadzilastore'
-		#STARTING PROGRAM
 		browser = init_browser(root)
 		print('=====INITIALIZING====')
 		goto_URL(browser,url)
 		while(True):
 			product_list = get_product_list(browser)
-			add_dbProduct(product_list,database_table,host,user,passwd,database,port)
+			add_dbProduct(product_list,database_table,mydb)
 			resp = do_pagination(browser,'next')
 			print("[+] Next Page : {}".format(resp))
 			if resp in ['ERROR','NONE']:
@@ -116,13 +115,19 @@ def main():
 	database_table = 'product_data'
 	port="8989"
 	url = 'https://tokopedia.com/gadzilastore'
+	mydb=mysql.connector.connect(
+		host=cHostname,
+		user=cUsername,
+		passwd=cPassword,
+		database=cDatabase,
+		port=cPort)
 	#STARTING PROGRAM
 	browser = init_browser(False)
 	print('=====INITIALIZING====')
 	goto_URL(browser,url)
 	while(True):
 		product_list = get_product_list(browser)
-		add_dbProduct(product_list,database_table,host,user,passwd,database,port)
+		add_dbProduct(product_list,database_table,mydb)
 		resp = do_pagination(browser,'next')
 		print("[+] Next Page : {}".format(resp))
 		if resp in ['ERROR','NONE']:

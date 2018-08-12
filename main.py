@@ -10,6 +10,7 @@ def main():
 	input = ''
 	while(True):
 		os.system('clear')
+		print("Welcome To SnowFlakes APP")
 		print("===================Menu======================")
 		print("| 1. Get List ")
 		print("| 2. Get Detail ")
