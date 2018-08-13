@@ -34,9 +34,9 @@ def do_pagination(browser,direction):
 	else:
 		return 'ERROR'
 
-def add_dbProduct(datas,database_table,mydb):
-	mycursor = mydb.cursor()
-	sql_header = "INSERT INTO `{}` (`shop_name`,`date`,`data_pid`, `data_cid`, `name`, `url`, `image`, `price`) VALUES ".format(database_table)
+def add_dbProduct(datas):
+	mycursor = gmydb.cursor()
+	sql_header = "INSERT INTO `{}` (`shop_name`,`date`,`data_pid`, `data_cid`, `name`, `url`, `image`, `price`) VALUES ".format(gtable_data)
 	mysql_rows = []
 	date = (datetime.datetime.now().strftime("%Y-%m-%d"))
 	for row in datas:
@@ -46,7 +46,7 @@ def add_dbProduct(datas,database_table,mydb):
 	sql_body=','.join(mysql_rows)
 	sql = sql_header+sql_body+sql_footer
 	mycursor.execute(sql)
-	mydb.commit()
+	gmydb.commit()
 	print("[+] DATA {} record inserted.".format(mycursor.rowcount))
 
 def get_product_list(browser):
@@ -79,12 +79,6 @@ def get_product_list(browser):
 def run(root):
 	#INITIALIZING
 	printo('INITIALIZING','center',True)
-	mydb=mysql.connector.connect(
-		host=ghost,
-		user=guser,
-		passwd=gpasswd,
-		database=gdatabase,
-		port=gport)
 	browser = init_browser(root)
 	print('[+] OK')
 	printo('STARTING','center',True)
@@ -92,7 +86,7 @@ def run(root):
 		goto_URL(browser,gurl)
 		while(True):
 			product_list = get_product_list(browser)
-			add_dbProduct(product_list,gtable_data,mydb)
+			add_dbProduct(product_list)
 			resp = do_pagination(browser,'next')
 			print("[+] Next Page : {}".format(resp))
 			if resp in ['ERROR','NONE']:

@@ -1,4 +1,7 @@
 .ipynb_checkpoints
+chromedriver
 sample*
-data
+/data
+/dist
+/build
 *.pyc

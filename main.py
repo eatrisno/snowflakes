@@ -1,12 +1,15 @@
 import os
+from helper import initialization
 from helper import printo
+from helper import info_OS
 import getList as mod1
 import getDetail as mod2
+#Are You USER ?
+root = True
 
 def commingSoon():
 	print("Comming soon..")
-
-
+	
 def menu():
 	printo('','center',True)
 	printo(' Welcome To SnowFlakes APP ','center',True)
@@ -21,8 +24,8 @@ def menu():
 	printo('','center',True)
 
 def main():
-	root = False
-	while(True):
+	info_OS()
+	while(initialization()):
 		os.system('clear')
 		menu()
 		input = raw_input("> ")

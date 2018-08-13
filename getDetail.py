@@ -1,20 +1,5 @@
 from helper import *
 
-def add_dbProduct(datas,mydb):
-	mycursor = mydb.cursor()
-	print("[+] Jumlah Data {} | Input Product".format(len(datas)))
-	sql_header = "INSERT INTO `product_data` (`shop_name`,`data-pid`, `data-cid`, `name`, `url`, `image`, `price`) VALUES "
-	mysql_rows = []
-	for i , row in enumerate(datas):
-		shop_name,data_pid,data_cid,name,price,url,image = row
-		mysql_rows.append("('{}','{}','{}','{}','{}','{}','{}')".format(shop_name,data_pid,data_cid,name,url,image,price))
-	sql_footer = " ON DUPLICATE KEY UPDATE `name`=VALUES(`name`),`data-cid`=VALUES(`data-cid`),`url`=VALUES(`url`),`price`=VALUES(`price`)"
-	sql_body=','.join(mysql_rows)
-	sql = sql_header+sql_body+sql_footer
-	mycursor.execute(sql)
-	mydb.commit()
-	print("[+] DATA {} record inserted.".format(mycursor.rowcount))
-
 def get_variant(browser):
 	variant_data = browser.execute_script('return product_variant')
 	resp={}
@@ -55,8 +40,8 @@ def get_page_detail(browser):
 	video = get_video(html)
 	return product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_description,video,variant,product_weight
 
-def add_dbProduct(data,table_detail,mydb):
-	mycursor = mydb.cursor()
+def add_dbProduct(data):
+	mycursor = gmydb.cursor()
 	sql_header = """INSERT INTO `{}` (
 		`data_pid`,
 		`image`,
@@ -67,7 +52,7 @@ def add_dbProduct(data,table_detail,mydb):
 		`description`,
 		`video`,
 		`variant`,
-		`weight`) VALUES """.format(table_detail)
+		`weight`) VALUES """.format(gtable_detail)
 	mysql_rows = []
 	product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_description,product_video,product_variant,product_weight = data
 	mysql_rows.append("('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"%(product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_description,product_video,product_variant,product_weight))
@@ -85,45 +70,39 @@ def add_dbProduct(data,table_detail,mydb):
 	sql_body=','.join(mysql_rows)
 	sql = sql_header+sql_body+sql_footer
 	mycursor.execute(sql)
-	mydb.commit()
+	gmydb.commit()
 	print("[+] {} record inserted.".format(mycursor.rowcount))
 	#UPDATE STATUS # 0 not uploaded # 1 uploaded # -1 removed
 	updated_status='1'
-	sql_update = ("UPDATE %s SET `status`='%s' WHERE `data_pid`='%s'"%(table_detail,updated_status,product_id))
+	sql_update = ("UPDATE %s SET `status`='%s' WHERE `data_pid`='%s'"%(gtable_detail,updated_status,product_id))
 	mycursor.execute(sql_update)
-	mydb.commit()
+	gmydb.commit()
 	print("[+] Status Updated | Row affected {}.".format(mycursor.rowcount))
 
-def get_product_listDB(table_data,table_detail,mydb):
-	mycursor = mydb.cursor()
+def get_product_listDB():
+	mycursor = gmydb.cursor()
 	date = (datetime.datetime.now().strftime("%Y-%m-%d"))
-	sql = "select `date`,`data_pid`,`shop_name`,`url`,`name` from {} where (data_pid) not in (select data_pid from {}) and date ='{}'".format(table_data,table_detail,date)
+	sql = "select `date`,`data_pid`,`shop_name`,`url`,`name` from {} where (data_pid) not in (select data_pid from {}) and date ='{}'".format(gtable_data,gtable_detail,date)
 	mycursor.execute(sql)
 	myresult = mycursor.fetchall()
-	print('[+] get {} product to get detail'.format(len(myresult)))
+	print('[+] {} product to get detail'.format(len(myresult)))
 	return myresult
 
 def run(root):
 	printo('INITIALIZING','center',True)
-	mydb=mysql.connector.connect(
-		host=ghost,
-		user=guser,
-		passwd=gpasswd,
-		database=gdatabase,
-		port=gport)
 	print('[+] OK')
 	printo('STARTING','center',True)
-	datas = get_product_listDB(gtable_data,gtable_detail,mydb)
+	datas = get_product_listDB()
 	if(len(datas) > 0):
+		browser = init_browser(root)
 		try:
-			browser = init_browser(root)
 			for row in datas:
 				date,data_pid,shop_name,url,name = row
 				print('[+] {} - {}'.format(data_pid,name))
 				print('[+] {}'.format(url))
 				goto_URL(browser,url)
 				resp = get_page_detail(browser)
-				add_dbProduct(resp,table_detail,mydb)
+				add_dbProduct(resp)
 		except Exception as e:
 			print e
 		browser.quit()
