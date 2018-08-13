@@ -1,42 +1,49 @@
 import os
+from helper import printo
 import getList as mod1
 import getDetail as mod2
 
-def doUpload(mode):
+def commingSoon():
 	print("Comming soon..")
-	x=raw_input('Press any key to continue.')
 
-def doUpdate(mode):
-	print("Comming soon..")
-	x=raw_input('Press any key to continue.')
+
+def menu():
+	printo('','center',True)
+	printo(' Welcome To SnowFlakes APP ','center',True)
+	printo('','center',True)
+	printo('Menu','center',False)
+	printo('','center',True)
+	printo(" 1. Get List")
+	printo(" 2. Get Detail")
+	printo(" 3. Upload")
+	printo(" 4. Update")
+	printo(" 0. Exit")
+	printo('','center',True)
 
 def main():
 	root = False
 	while(True):
 		os.system('clear')
-		print("Welcome To SnowFlakes APP")
-		print("===================Menu======================")
-		print("| 1. Get List ")
-		print("| 2. Get Detail ")
-		print("| 3. Upload ")
-		print("| 4. Update ")
-		print("| 0. Exit ")
-		print("=============================================")
-		input = raw_input(">")
+		menu()
+		input = raw_input("> ")
 		os.system('clear')
 		if( input == '1' ):
 			mod1.run(root)
 		elif( input == '2'):
 			mod2.run(root)
 		elif( input == '3'):
-			doUpload(root)
+			commingSoon()
 		elif( input == '4'):
-			doUpload(root)
+			commingSoon()
 		elif( input == '0'):
 			print('Bye..')
 			break
 		else:
+			menu()
 			print('No Match')
+			print('nb: Choose with number.')
+		#for hold screen until press any key
+		x=raw_input('Press Enter to continue.')
 
 if __name__ == '__main__':
 	main()

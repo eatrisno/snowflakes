@@ -104,7 +104,7 @@ def get_product_listDB(table_data,table_detail,mydb):
 	return myresult
 
 def run(root):
-	print('=====INITIALIZING====')
+	printo('INITIALIZING','center',True)
 	mydb=mysql.connector.connect(
 		host=ghost,
 		user=guser,
@@ -112,7 +112,7 @@ def run(root):
 		database=gdatabase,
 		port=gport)
 	print('[+] OK')
-	print('======STARTING=====')
+	printo('STARTING','center',True)
 	datas = get_product_listDB(gtable_data,gtable_detail,mydb)
 	if(len(datas) > 0):
 		try:
@@ -128,9 +128,8 @@ def run(root):
 			print e
 		browser.quit()
 	else:
-		print('[-] No data to get detail | get deta first.')
-	print("=====FINISH====")
-	x = raw_input('Press any key to continue')
+		print('[-] No data to get detail | get data list first.')
+	printo('FINISH','center',True)
 
 def main():
 	root = False

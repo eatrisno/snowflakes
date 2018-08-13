@@ -32,7 +32,7 @@ gtable_detail = 'product_detail'
 gurl = 'https://tokopedia.com/gadzilastore'
 
 def init_browser(headless=True):
-	print('[]+] Init Browser')
+	print('[+] Init Browser')
 	options = webdriver.ChromeOptions()
 	if headless == True:
 		options.add_argument("headless")
@@ -41,6 +41,14 @@ def init_browser(headless=True):
 	browser.implicitly_wait(20)
 	return browser
 
+def printo(text, algn='left',fill=False):
+	if algn == 'left':
+		print "|{:<50}|".format(text)
+	elif algn == 'center':
+		if fill == True:
+			print "|{:-^50}|".format(text)
+		else:
+			print "|{:^50}|".format(text)
 
 def goto_URL(browser,url):
 	curr_url = browser.current_url

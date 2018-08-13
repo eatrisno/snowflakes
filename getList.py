@@ -78,7 +78,7 @@ def get_product_list(browser):
 
 def run(root):
 	#INITIALIZING
-	print('=====INITIALIZING====')
+	printo('INITIALIZING','center',True)
 	mydb=mysql.connector.connect(
 		host=ghost,
 		user=guser,
@@ -87,7 +87,7 @@ def run(root):
 		port=gport)
 	browser = init_browser(root)
 	print('[+] OK')
-	print('======STARTING=====')
+	printo('STARTING','center',True)
 	try:
 		goto_URL(browser,gurl)
 		while(True):
@@ -101,8 +101,7 @@ def run(root):
 	except Exception as e:
 		print e
 	browser.quit()
-	print("=====FINISH====")
-	x = raw_input('Press any key to continue')
+	printo('FINISH','center',True)
 
 def main():
 	boot = False
