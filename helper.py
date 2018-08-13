@@ -20,13 +20,24 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 
+gdriver = "./driver/chromedriver"
+gdata = "./data"
+ghost="pixel.mynaworks.com"
+guser="dev"
+gpasswd="dev"
+gdatabase="sampleDB"
+gport="8989"
+gtable_data = 'product_data'
+gtable_detail = 'product_detail'
+gurl = 'https://tokopedia.com/gadzilastore'
+
 def init_browser(headless=True):
-	print('+ Init Browser')
+	print('[]+] Init Browser')
 	options = webdriver.ChromeOptions()
 	if headless == True:
 		options.add_argument("headless")
-	options.add_argument('user-data-dir=./data') #Your google chrome data
-	browser = webdriver.Chrome("./driver/chromedriver",chrome_options=options)
+	options.add_argument('user-data-dir={}'.format(gdata)) #Your google chrome data
+	browser = webdriver.Chrome(gdriver,chrome_options=options)
 	browser.implicitly_wait(20)
 	return browser
 

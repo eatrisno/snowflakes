@@ -48,7 +48,7 @@ def add_dbProduct(datas,database_table,mydb):
 	mycursor.execute(sql)
 	mydb.commit()
 	print("[+] DATA {} record inserted.".format(mycursor.rowcount))
-	
+
 def get_product_list(browser):
 	resp = []
 	print('[+] Load Page | {}'.format(browser.current_url))
@@ -79,28 +79,20 @@ def get_product_list(browser):
 def run(root):
 	#INITIALIZING
 	print('=====INITIALIZING====')
-	host="pixel.mynaworks.com"
-	user="dev"
-	passwd="dev"
-	database="sampleDB"
-	port="8989"
-	database_table = 'product_data'
-	url = 'https://tokopedia.com/gadzilastore'
 	mydb=mysql.connector.connect(
-		host=host,
-		user=user,
-		passwd=passwd,
-		database=database,
-		port=port)
-
+		host=ghost,
+		user=guser,
+		passwd=gpasswd,
+		database=gdatabase,
+		port=gport)
 	browser = init_browser(root)
 	print('[+] OK')
 	print('======STARTING=====')
 	try:
-		goto_URL(browser,url)
+		goto_URL(browser,gurl)
 		while(True):
 			product_list = get_product_list(browser)
-			add_dbProduct(product_list,database_table,mydb)
+			add_dbProduct(product_list,gtable_data,mydb)
 			resp = do_pagination(browser,'next')
 			print("[+] Next Page : {}".format(resp))
 			if resp in ['ERROR','NONE']:

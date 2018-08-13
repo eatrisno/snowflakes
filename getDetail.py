@@ -58,29 +58,29 @@ def get_page_detail(browser):
 def add_dbProduct(data,table_detail,mydb):
 	mycursor = mydb.cursor()
 	sql_header = """INSERT INTO `{}` (
-		`data_pid`, 
-		`image`, 
-		`name`, 
-		`etalase`, 
-		`min_buy`, 
-		`price`, 
-		`description`, 
-		`video`, 
-		`variant`, 
+		`data_pid`,
+		`image`,
+		`name`,
+		`etalase`,
+		`min_buy`,
+		`price`,
+		`description`,
+		`video`,
+		`variant`,
 		`weight`) VALUES """.format(table_detail)
 	mysql_rows = []
 	product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_description,product_video,product_variant,product_weight = data
 	mysql_rows.append("('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"%(product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_description,product_video,product_variant,product_weight))
 	sql_footer = """ ON DUPLICATE KEY UPDATE
-		`data_pid`=VALUES(`data_pid`), 
-		`image`=VALUES(`image`), 
-		`name`=VALUES(`name`), 
-		`etalase`=VALUES(`etalase`), 
-		`min_buy`=VALUES(`min_buy`), 
-		`price`=VALUES(`price`), 
-		`description`=VALUES(`description`), 
-		`video`=VALUES(`video`), 
-		`variant`=VALUES(`variant`), 
+		`data_pid`=VALUES(`data_pid`),
+		`image`=VALUES(`image`),
+		`name`=VALUES(`name`),
+		`etalase`=VALUES(`etalase`),
+		`min_buy`=VALUES(`min_buy`),
+		`price`=VALUES(`price`),
+		`description`=VALUES(`description`),
+		`video`=VALUES(`video`),
+		`variant`=VALUES(`variant`),
 		`weight`=VALUES(`weight`)"""
 	sql_body=','.join(mysql_rows)
 	sql = sql_header+sql_body+sql_footer
@@ -105,22 +105,15 @@ def get_product_listDB(table_data,table_detail,mydb):
 
 def run(root):
 	print('=====INITIALIZING====')
-	host="pixel.mynaworks.com"
-	user="dev"
-	passwd="dev"
-	database="sampleDB"
-	port="8989"
-	table_data = 'product_data'
-	table_detail = 'product_detail'
 	mydb=mysql.connector.connect(
-		host=host,
-		user=user,
-		passwd=passwd,
-		database=database,
-		port=port)
+		host=ghost,
+		user=guser,
+		passwd=gpasswd,
+		database=gdatabase,
+		port=gport)
 	print('[+] OK')
 	print('======STARTING=====')
-	datas = get_product_listDB(table_data,table_detail,mydb)
+	datas = get_product_listDB(gtable_data,gtable_detail,mydb)
 	if(len(datas) > 0):
 		try:
 			browser = init_browser(root)
@@ -138,7 +131,7 @@ def run(root):
 		print('[-] No data to get detail | get deta first.')
 	print("=====FINISH====")
 	x = raw_input('Press any key to continue')
-	
+
 def main():
 	root = False
 	run(root)
