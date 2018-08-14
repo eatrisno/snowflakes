@@ -7,6 +7,7 @@ import json
 import time
 import signal
 import shutil
+import random
 import zipfile
 import urllib2
 import datetime
@@ -90,17 +91,15 @@ def info_OS():
 	print("[+]	mac_ver: %s"% str(platform.mac_ver()))
 	printo('','center',True)
 
-def extract_file( zf, info, extract_dir ):
-	zf.extract( info.filename, path=extract_dir )
-	out_path = os.path.join( extract_dir, info.filename )
-	perm = info.external_attr >> 16L
-	os.chmod( out_path, perm )
 
 def unzip_file(filename,outfolder):
 	print('[+] Unpacking driver')
 	with zipfile.ZipFile(filename, 'r') as zf:
 		for info in zf.infolist():
-			extract_file( zf, info, outfolder )
+			zf.extract( info.filename, path=outfolder )
+			out_path = os.path.join( outfolder, info.filename )
+			perm = info.external_attr >> 16L
+			os.chmod( out_path, perm )
 
 def check_driver(name,url):
 	if not (os.path.isfile(name)):

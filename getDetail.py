@@ -137,7 +137,8 @@ def run():
 	print('[+] Get product list')
 	datas = get_product_listDB()
 	if(len(datas) > 0):
-		for i,row in enumerate(datas):
+		new_datas = random.sample(datas, len(datas))
+		for i,row in enumerate(new_datas):
 			data_pid,url,name = row
 			print('[+] {} - {} - {}'.format(i+1,data_pid,name))
 			print('[+] {}'.format(url))
