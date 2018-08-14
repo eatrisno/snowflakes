@@ -85,16 +85,18 @@ def add_dbProduct(data):
 		"""('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}')
 		""".format(product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_condition,product_description,product_video,product_variant,product_weight,product_insurance))
 	sql_footer = """ ON DUPLICATE KEY UPDATE
-		`data_pid`=VALUES(`data_pid`),
 		`image`=VALUES(`image`),
 		`name`=VALUES(`name`),
 		`etalase`=VALUES(`etalase`),
 		`min_buy`=VALUES(`min_buy`),
 		`price`=VALUES(`price`),
+		`condition`=VALUES(`price`)
 		`description`=VALUES(`description`),
 		`video`=VALUES(`video`),
 		`variant`=VALUES(`variant`),
-		`weight`=VALUES(`weight`)"""
+		`weight`=VALUES(`weight`),
+		`insurance`=VALUES(`insurance`)
+		"""
 	sql_body=','.join(mysql_rows)
 	sql = sql_header+sql_body+sql_footer
 	try:
@@ -128,19 +130,20 @@ def get_product_listDB():
 		print("[-] Mysql : {}".format(sql))
 	return myresult
 
-def run(root):
-	printo('INITIALIZING','center',True)
+def run():
+	#INITIALIZING
 	browser = init_browser(root)
-	print('[+] OK')
 	printo('STARTING','center',True)
-	print('[+] get product list')
+	print('[+] Get product list')
 	datas = get_product_listDB()
 	if(len(datas) > 0):
 		for i,row in enumerate(datas):
+			delay()
 			data_pid,url,name = row
 			print('[+] {} - {} - {}'.format(i+1,data_pid,name))
 			print('[+] {}'.format(url))
 			goto_URL(browser,url)
+			delay()
 			resp = get_page_detail(browser)
 			add_dbProduct(resp)
 		browser.quit()
@@ -149,8 +152,7 @@ def run(root):
 	printo('FINISH','center',True)
 
 def main():
-	root = False
-	run(root)
+	run()
 
 if __name__ == '__main__':
 	name()

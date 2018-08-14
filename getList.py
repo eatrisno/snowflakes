@@ -47,7 +47,7 @@ def add_dbProduct(datas):
 	sql = sql_header+sql_body+sql_footer
 	mycursor.execute(sql)
 	gmydb.commit()
-	print("[+] DATA {} record inserted.".format(mycursor.rowcount))
+	print("[+] {} DATA record inserted.".format(mycursor.rowcount))
 
 def get_product_list(browser):
 	resp = []
@@ -76,15 +76,14 @@ def get_product_list(browser):
 	print('[+] Jumlah Produk {} | {} Produk Berhasil diambil.'.format(len(product_list),len(resp)))
 	return resp
 
-def run(root):
+def run():
 	#INITIALIZING
-	printo('INITIALIZING','center',True)
 	browser = init_browser(root)
-	print('[+] OK')
 	printo('STARTING','center',True)
 	try:
 		goto_URL(browser,gurl)
 		while(True):
+			delay()
 			product_list = get_product_list(browser)
 			add_dbProduct(product_list)
 			resp = do_pagination(browser,'next')
@@ -98,9 +97,7 @@ def run(root):
 	printo('FINISH','center',True)
 
 def main():
-	boot = False
-	run(boot)
-
+	run()
 
 if __name__ == '__main__':
 	main()

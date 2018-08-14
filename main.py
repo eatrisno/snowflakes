@@ -1,7 +1,9 @@
 import os
-from helper import initialization
+from helper import init_driver
 from helper import printo
 from helper import info_OS
+from helper import init_browser
+from helper import check_internet
 import getList as mod1
 import getDetail as mod2
 #Are You USER ?
@@ -23,31 +25,40 @@ def menu():
 	printo(" 0. Exit")
 	printo('','center',True)
 
-def main():
+def initializaion():
+	printo('INIZIALIZATION','center',True)
 	info_OS()
-	init = initialization()
-	while(init):
-		os.system('clear')
+	check_internet()
+	init_driver()
+	os.system('clear')
+	return True
+
+def clear():
+	for i in range(15):
+		print('\n')
+
+def main():
+	printo('HI. THERE !','center',False) #True headless | false not headless
+	init = initializaion()
+	while(True):
+		clear()
 		menu()
-		input = raw_input("> ")
-		os.system('clear')
-		if( input == '1' ):
-			mod1.run(root)
-		elif( input == '2'):
-			mod2.run(root)
-		elif( input == '3'):
+		vinput = raw_input("> ")
+		clear()
+		if( vinput == '1' ):
+			mod1.run()
+		elif( vinput == '2'):
+			mod2.run()
+		elif( vinput == '3'):
 			commingSoon()
-		elif( input == '4'):
+		elif( vinput == '4'):
 			commingSoon()
-		elif( input == '0'):
+		elif( vinput == '0'):
 			print('Bye..')
 			break
 		else:
 			menu()
 			print('No Match')
-			print('nb: Choose with number.')
-		#for hold screen until press any key
-		x=raw_input('Press Enter to continue.')
 
 if __name__ == '__main__':
 	main()

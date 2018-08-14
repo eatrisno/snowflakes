@@ -22,8 +22,9 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
-curr_fld = os.path.dirname(os.path.abspath(__file__))
 
+curr_fld = os.path.dirname(os.path.abspath(__file__))
+root = True
 driver = "chromedriver"
 gdriver = curr_fld+"/"+driver
 gdata = curr_fld+"/data"
@@ -47,12 +48,18 @@ gmydb=mysql.connector.connect(
 	port=gport)
 
 def check_internet():
-	try:
-		webUrl = urllib2.urlopen("https://www.youtube.com/watch?v=LpCSeB7mF7Y")
-		return webUrl.getcode()
-	except Exception as e:
-		# print e
-		return False
+	while(True):
+		try:
+			webUrl = urllib2.urlopen("https://www.youtube.com/watch?v=LpCSeB7mF7Y")
+			
+			if(webUrl.getcode()==200):
+				print('[+] Checking Connection | OK')
+				break
+			else:
+				print('[-] Retry Check your internet.')
+				delay()	
+		except Exception as e:
+			print('[E] Error check internet: {}'.format(e))
 
 def printo(text, algn='left',fill=False):
 	if algn == 'left':
@@ -95,7 +102,7 @@ def unzip_file(filename,outfolder):
 		for info in zf.infolist():
 			extract_file( zf, info, outfolder )
 
-def prepare_driver(name,url):
+def check_driver(name,url):
 	if not (os.path.isfile(name)):
 		print('[+] Checking driver')
 		if not (os.path.isfile('chromedriver.zip')):
@@ -106,17 +113,12 @@ def prepare_driver(name,url):
 		chromedriver_name = './chromedriver.zip'
 		unzip_file(chromedriver_name,'./')
 		os.remove(chromedriver_name)
+	else:
+		print('[+] Driver | OK')
 
-
-def initialization():
-	printo('HI.','center',False)
-	printo('INIZIALIZATION','center',True)
-	resp = check_internet()
-	if not resp == 200 :
-		print "[-] Check Your internet Connection"
-		return False
+def init_driver():
 	ostype = platform.system()
-	print ostype
+	print('[+] Checking Driver Type | {}'.format(ostype))
 	if (ostype == "Darwin"):
 		url = mac
 		gdriver = curr_fld+'/chromedriver'
@@ -127,31 +129,41 @@ def initialization():
 		url = win
 		dgriver = curr_fld+'/chromedriver.exe'
 	else:
-		print "[-] Initialization Failed"
+		print "[-] Initialization Driver Failed"
 		return False
-	prepare_driver(driver,url)
-	print("[+] Initialization OK")
+	check_driver(driver,url)
+	print("[+] Initialization Driver OK")
 	return True
-	
 	
 
 def init_browser(headless=True):
-	print('[+] Init Browser')
-	options = webdriver.ChromeOptions()
-	if headless == True:
-		options.add_argument("headless")
-	options.add_argument('user-data-dir={}'.format(gdata)) #Your google chrome data
-	browser = webdriver.Chrome(gdriver,chrome_options=options)
-	browser.implicitly_wait(20)
-	return browser
+	try:
+		options = webdriver.ChromeOptions()
+		if headless == True:
+			options.add_argument("headless")
+		options.add_argument('user-data-dir={}'.format(gdata)) #Your google chrome data
+		browser = webdriver.Chrome(gdriver,chrome_options=options)
+		browser.implicitly_wait(20)
+		print('[+] Initialization Browser OK')
+		return browser
+	except:
+		print('[-] Initialization Browser Failed')
+		return False
+
+def delay(delay=10):
+	extraTime = randint(0,20)
+	newDelay = extraTime + delay
+	strDelay= str(datetime.timedelta(seconds=newDelay))
+	print('[@] Sleep - {}'.format(strDelay))
+	time.sleep(newDelay)
 
 
 def goto_URL(browser,url):
+	print('[+] Open : {}'.format(url))
 	curr_url = browser.current_url
 	if curr_url != url:
 		browser.get(url)
 	else:
 		browser.refresh()
-	time.sleep(3)
 	new_url = browser.current_url
 	print('[+] NOW :{}'.format(new_url))
