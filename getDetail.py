@@ -51,6 +51,19 @@ def get_page_detail(browser):
 	product_insurance = get_var(html,'Asuransi')
 	return [var.encode('utf8').replace('\'','\\\'') for var in product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_condition,product_description,product_video,product_variant,product_weight,product_insurance]
 
+def update_status():
+	#not used yet
+	#UPDATE STATUS # 0 not uploaded # 1 uploaded # -1 removed
+	updated_status='1'
+	sql_update = ("UPDATE %s SET `status`='%s' WHERE `data_pid`='%s'"%(gtable_detail,updated_status,product_id))
+	try:
+		mycursor.execute(sql_update)
+		gmydb.commit()
+		print("[+] Status Updated | Row affected {}.".format(mycursor.rowcount))
+	except Exception as e:
+		print("[-] Error : {}".format(e))
+		print("[-] Mysql : {}".format(sql_update))
+
 def add_dbProduct(data):
 	mycursor = gmydb.cursor()
 	sql_header = """INSERT INTO `{}` (
@@ -91,16 +104,7 @@ def add_dbProduct(data):
 	except Exception as e:
 		print("[-] Error : {}".format(e))
 		print("[-] Mysql : {}".format(sql))
-	#UPDATE STATUS # 0 not uploaded # 1 uploaded # -1 removed
-	updated_status='1'
-	sql_update = ("UPDATE %s SET `status`='%s' WHERE `data_pid`='%s'"%(gtable_detail,updated_status,product_id))
-	try:
-		mycursor.execute(sql_update)
-		gmydb.commit()
-		print("[+] Status Updated | Row affected {}.".format(mycursor.rowcount))
-	except Exception as e:
-		print("[-] Error : {}".format(e))
-		print("[-] Mysql : {}".format(sql_update))
+	
 
 def get_product_listDB():
 	myresult = []
@@ -132,9 +136,9 @@ def run(root):
 	print('[+] get product list')
 	datas = get_product_listDB()
 	if(len(datas) > 0):
-		for row in datas:
+		for i,row in enumerate(datas):
 			data_pid,url,name = row
-			print('[+] {} - {}'.format(data_pid,name))
+			print('[+] {} - {} - {}'.format(i+1,data_pid,name))
 			print('[+] {}'.format(url))
 			goto_URL(browser,url)
 			resp = get_page_detail(browser)

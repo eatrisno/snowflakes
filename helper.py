@@ -9,7 +9,6 @@ import signal
 import shutil
 import zipfile
 import urllib2
-import platform
 import datetime
 import requests
 import urlparse
@@ -72,7 +71,7 @@ def linux_distribution():
 
 def info_OS():
 	printo('','center',True)
-	printo('INFO ({})'.format(os.name),'center',True)
+	printo('INFO ({})'.format(platform.system()),'center',True)
 	print("[+]	Python version: %s"%sys.version.split('\n'))
 	print("[+]	dist: %s"%str(platform.dist()))
 	print("[+]	linux_distribution: %s"%str(linux_distribution()))
@@ -120,13 +119,13 @@ def initialization():
 	print ostype
 	if (ostype == "Darwin"):
 		url = mac
-		driver = 'chromedriver'
+		gdriver = curr_fld+'/chromedriver'
 	elif (ostype == 'Linux' ):
 		url = linux
-		driver = 'chromedriver'
-	elif (ostype == "nt"):
+		gdriver = curr_fld+'/chromedriver'
+	elif (ostype == "Windows"):
 		url = win
-		driver = 'chromedriver.exe'
+		dgriver = curr_fld+'/chromedriver.exe'
 	else:
 		print "[-] Initialization Failed"
 		return False
