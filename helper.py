@@ -9,6 +9,7 @@ import signal
 import shutil
 import zipfile
 import urllib2
+import platform
 import datetime
 import requests
 import urlparse
@@ -115,14 +116,15 @@ def initialization():
 	if not resp == 200 :
 		print "[-] Check Your internet Connection"
 		return False
-
-	if (os.name == "posix"):
+	ostype = platform.system()
+	print ostype
+	if (ostype == "Darwin"):
 		url = mac
 		driver = 'chromedriver'
-	elif (os.name == 'linux' ):
+	elif (ostype == 'Linux' ):
 		url = linux
 		driver = 'chromedriver'
-	elif (os.name == "nt"):
+	elif (ostype == "nt"):
 		url = win
 		driver = 'chromedriver.exe'
 	else:
