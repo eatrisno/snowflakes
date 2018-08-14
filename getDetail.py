@@ -90,7 +90,7 @@ def add_dbProduct(data):
 		`etalase`=VALUES(`etalase`),
 		`min_buy`=VALUES(`min_buy`),
 		`price`=VALUES(`price`),
-		`condition`=VALUES(`price`)
+		`condition`=VALUES(`price`),
 		`description`=VALUES(`description`),
 		`video`=VALUES(`video`),
 		`variant`=VALUES(`variant`),
