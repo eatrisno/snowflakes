@@ -135,20 +135,21 @@ def run():
 	browser = init_browser(root)
 	printo('STARTING','center',True)
 	print('[+] Get product list')
-	datas = get_product_listDB()
-	if(len(datas) > 0):
-		new_datas = random.sample(datas, len(datas))
-		for i,row in enumerate(new_datas):
-			data_pid,url,name = row
-			print('[+] {} - {} - {}'.format(i+1,data_pid,name))
+	while(True):
+		datas = get_product_listDB()
+		if(len(datas) > 0):
+			new_datas = random.sample(datas, len(datas))
+			data_pid,url,name = new_datas[0]
+			print('[+] {} - {}'.format(data_pid,name))
 			print('[+] {}'.format(url))
 			goto_URL(browser,url)
 			delay()
 			resp = get_page_detail(browser)
 			add_dbProduct(resp)
-		browser.quit()
-	else:
-		print('[-] No data to get detail | get data list first.')
+		else:
+			print('[-] No data to get detail | get data list first.')
+			break
+	browser.quit()
 	printo('FINISH','center',True)
 
 def main():
