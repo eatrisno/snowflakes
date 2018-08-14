@@ -12,10 +12,10 @@ def do_pagination(browser,direction):
 		except Exception as e:
 			err +=1
 			print('[-] Try Again | {} | ErT :{} | pagination()'.format(err,e))
-		if (pagination_count > 0 or err >= 3) :
+		if (pagination_count > 0 or err >= 5) :
 			break
 		else:
-			time.sleep(10)
+			time.sleep(3)
 			print('[/] Wait page loaded.')
 	if pagination_count > 0:
 		for page in pagination:
@@ -59,7 +59,7 @@ def get_product_list(browser):
 		if(product_count > 0):
 			break
 		else:
-			time.sleep(10)
+			time.sleep(3)
 			print('[/] Waiting Page Loaded | Wait Product Loaded : {}'.format(product_count))
 	shop_name= html.find(id='shop_name').get('value')
 	for i, product in enumerate(product_list):
@@ -83,7 +83,6 @@ def run():
 	try:
 		goto_URL(browser,gurl)
 		while(True):
-			delay()
 			product_list = get_product_list(browser)
 			add_dbProduct(product_list)
 			resp = do_pagination(browser,'next')
