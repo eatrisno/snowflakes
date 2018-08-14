@@ -59,8 +59,8 @@ def get_product_list(browser):
 		if(product_count > 0):
 			break
 		else:
-			time.sleep(3)
-			print('[/] Waiting Page Loaded | Wait Product Loaded : {}'.format(product_count))
+			time.sleep(1)
+			print('[/] Waiting Page Loaded | Retrying')
 	shop_name= html.find(id='shop_name').get('value')
 	for i, product in enumerate(product_list):
 		url_str= product.find('a').get('href')

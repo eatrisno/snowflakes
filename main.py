@@ -34,14 +34,13 @@ def initializaion():
 	return True
 
 def clear():
-	for i in range(15):
+	for i in range(10):
 		print('\n')
 
 def main():
 	printo('HI. THERE !','center',False) #True headless | false not headless
 	init = initializaion()
 	while(True):
-		clear()
 		menu()
 		vinput = raw_input("> ")
 		clear()
@@ -59,6 +58,6 @@ def main():
 		else:
 			menu()
 			print('No Match')
-
+		print('Finish run : {}'.fromat(vinput))
 if __name__ == '__main__':
 	main()
