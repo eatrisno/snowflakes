@@ -138,7 +138,6 @@ def run():
 	datas = get_product_listDB()
 	if(len(datas) > 0):
 		for i,row in enumerate(datas):
-			delay()
 			data_pid,url,name = row
 			print('[+] {} - {} - {}'.format(i+1,data_pid,name))
 			print('[+] {}'.format(url))

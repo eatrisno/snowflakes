@@ -40,6 +40,7 @@ def clear():
 def main():
 	printo('HI. THERE !','center',False) #True headless | false not headless
 	init = initializaion()
+	clear()
 	while(True):
 		menu()
 		vinput = raw_input("> ")
