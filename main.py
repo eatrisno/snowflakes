@@ -25,7 +25,8 @@ def menu():
 
 def main():
 	info_OS()
-	while(initialization()):
+	init = initialization()
+	while(init):
 		os.system('clear')
 		menu()
 		input = raw_input("> ")

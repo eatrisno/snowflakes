@@ -22,9 +22,11 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
+curr_fld = os.path.dirname(os.path.abspath(__file__))
 
-gdriver = "./chromedriver"
-gdata = "./data"
+driver = "chromedriver"
+gdriver = curr_fld+"/"+driver
+gdata = curr_fld+"/data"
 ghost="pixel.mynaworks.com"
 guser="dev"
 gpasswd="dev"
@@ -33,12 +35,24 @@ gport="8989"
 gtable_data = 'product_data'
 gtable_detail = 'product_detail'
 gurl = 'https://tokopedia.com/gadzilastore'
+mac='https://chromedriver.storage.googleapis.com/2.41/chromedriver_mac64.zip'
+win='https://chromedriver.storage.googleapis.com/2.41/chromedriver_win32.zip'
+linux='https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip'
+
 gmydb=mysql.connector.connect(
 	host=ghost,
 	user=guser,
 	passwd=gpasswd,
 	database=gdatabase,
 	port=gport)
+
+def check_internet():
+	try:
+		webUrl = urllib2.urlopen("https://www.youtube.com/watch?v=LpCSeB7mF7Y")
+		return webUrl.getcode()
+	except Exception as e:
+		# print e
+		return False
 
 def printo(text, algn='left',fill=False):
 	if algn == 'left':
@@ -56,7 +70,8 @@ def linux_distribution():
 		return "N/A"
 
 def info_OS():
-	printo('INFO({})'.format(os.name),'center',True)
+	printo('','center',True)
+	printo('INFO ({})'.format(os.name),'center',True)
 	print("[+]	Python version: %s"%sys.version.split('\n'))
 	print("[+]	dist: %s"%str(platform.dist()))
 	print("[+]	linux_distribution: %s"%str(linux_distribution()))
@@ -92,38 +107,31 @@ def prepare_driver(name,url):
 		unzip_file(chromedriver_name,'./')
 		os.remove(chromedriver_name)
 
-def check_internet():
-	webUrl = urllib2.urlopen("http://trisno.online")
-	print "result code: " + str(webUrl.getcode()) 
-
 
 def initialization():
-	check_internet()
-	
-	mac='https://chromedriver.storage.googleapis.com/2.41/chromedriver_mac64.zip'
-	win='https://chromedriver.storage.googleapis.com/2.41/chromedriver_win32.zip'
-	linux='https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip'
-	
 	printo('HI.','center',False)
 	printo('INIZIALIZATION','center',True)
+	resp = check_internet()
+	if not resp == 200 :
+		print "[-] Check Your internet Connection"
+		return False
 
 	if (os.name == "posix"):
 		url = mac
-		name = 'chromedriver'
-		prepare_driver(name,url)
+		driver = 'chromedriver'
 	elif (os.name == 'linux' ):
 		url = linux
-		name = 'chromedriver'
-		prepare_driver(name,url)
+		driver = 'chromedriver'
 	elif (os.name == "nt"):
 		url = win
-		name = 'chromedriver.exe'
-		prepare_driver(name,url)
+		driver = 'chromedriver.exe'
 	else:
 		print "[-] Initialization Failed"
 		return False
+	prepare_driver(driver,url)
 	print("[+] Initialization OK")
 	return True
+	
 	
 
 def init_browser(headless=True):

@@ -22,23 +22,34 @@ def get_video(html):
 	resp = []
 	for x in video_tmp:
 		resp.append(x.find('iframe').get('src'))
-	return '###'.join(resp)
+	return '\n'.join(resp)
+
+def get_var(html,vtype):
+	big = html.find(class_='rvm-product-info')
+	for row in big.find_all(class_='inline-block va-middle'):
+		temp = row.find_all('div')
+		if temp[0].text.strip().lower() == vtype.lower():
+			return temp[1].text.strip()
+			break
+	return ''
 
 def get_page_detail(browser):
 	html = BeautifulSoup(browser.page_source,'html.parser')
 	shop_id = html.find(id='shop-id').get('value').strip()
 	product_id = html.find(id='product-id').get('value').strip()
+	product_img_obj = html.find_all("div", {"class": re.compile("^content-img slick-slide")})
+	product_img = '\n'.join([img.find('img').get('src') for img in product_img_obj])
 	product_name = html.find(id='product-name').get('value').strip()
 	product_menu = html.find(id='menu-name').get('value').strip()
-	product_price = html.find(id='product_price_int').get('value').strip()
-	product_weight = html.find(id='product-weight-kg').get('value').strip()
 	product_min_buy = html.find(id='min-order').get('value').strip()
-	product_description = html.find(itemprop='description').text.strip().replace('\'','\\\'')
-	product_img_str = html.find_all("div", {"class": re.compile("^content-img slick-slide")})
-	product_img = '###'.join([img.find('img').get('src') for img in product_img_str])
-	variant = str(get_variant(browser)).replace('\'','\\\'')
-	video = get_video(html)
-	return product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_description,video,variant,product_weight
+	product_price = html.find(id='product_price_int').get('value').strip()
+	product_condition = get_var(html,'Kondisi')
+	product_description = browser.find_element_by_id('info').text
+	product_video = get_video(html)
+	product_variant = json.dumps(get_variant(browser))
+	product_weight = html.find(class_='rvm-shipping-content').text.strip()
+	product_insurance = get_var(html,'Asuransi')
+	return [var.encode('utf8').replace('\'','\\\'') for var in product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_condition,product_description,product_video,product_variant,product_weight,product_insurance]
 
 def add_dbProduct(data):
 	mycursor = gmydb.cursor()
@@ -49,13 +60,17 @@ def add_dbProduct(data):
 		`etalase`,
 		`min_buy`,
 		`price`,
+		`condition`,
 		`description`,
 		`video`,
 		`variant`,
-		`weight`) VALUES """.format(gtable_detail)
+		`weight`,
+		`insurance`) VALUES """.format(gtable_detail)
 	mysql_rows = []
-	product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_description,product_video,product_variant,product_weight = data
-	mysql_rows.append("('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"%(product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_description,product_video,product_variant,product_weight))
+	product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_condition,product_description,product_video,product_variant,product_weight,product_insurance = data
+	mysql_rows.append(
+		"""('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}')
+		""".format(product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_condition,product_description,product_video,product_variant,product_weight,product_insurance))
 	sql_footer = """ ON DUPLICATE KEY UPDATE
 		`data_pid`=VALUES(`data_pid`),
 		`image`=VALUES(`image`),
@@ -69,42 +84,61 @@ def add_dbProduct(data):
 		`weight`=VALUES(`weight`)"""
 	sql_body=','.join(mysql_rows)
 	sql = sql_header+sql_body+sql_footer
-	mycursor.execute(sql)
-	gmydb.commit()
-	print("[+] {} record inserted.".format(mycursor.rowcount))
+	try:
+		mycursor.execute(sql)
+		gmydb.commit()
+		print("[+] Status Uploaded | Row affected {} ".format(mycursor.rowcount))
+	except Exception as e:
+		print("[-] Error : {}".format(e))
+		print("[-] Mysql : {}".format(sql))
 	#UPDATE STATUS # 0 not uploaded # 1 uploaded # -1 removed
 	updated_status='1'
 	sql_update = ("UPDATE %s SET `status`='%s' WHERE `data_pid`='%s'"%(gtable_detail,updated_status,product_id))
-	mycursor.execute(sql_update)
-	gmydb.commit()
-	print("[+] Status Updated | Row affected {}.".format(mycursor.rowcount))
+	try:
+		mycursor.execute(sql_update)
+		gmydb.commit()
+		print("[+] Status Updated | Row affected {}.".format(mycursor.rowcount))
+	except Exception as e:
+		print("[-] Error : {}".format(e))
+		print("[-] Mysql : {}".format(sql_update))
 
 def get_product_listDB():
+	myresult = []
 	mycursor = gmydb.cursor()
 	date = (datetime.datetime.now().strftime("%Y-%m-%d"))
-	sql = "select `date`,`data_pid`,`shop_name`,`url`,`name` from {} where (data_pid) not in (select data_pid from {}) and date ='{}'".format(gtable_data,gtable_detail,date)
-	mycursor.execute(sql)
-	myresult = mycursor.fetchall()
-	print('[+] {} product to get detail'.format(len(myresult)))
+	sql = """
+	select a.`data_pid`,`url`,`name` from 
+		(select `data_pid`,`name`,`price`,`url` from {0} where date='{2}') as a,
+		(select `data_pid`,`price` from {1} ) as b
+	where b.`data_pid`=a.`data_pid`
+		and b.`price` != a.`price`
+	union
+	select `data_pid`,`url`,`name` from {0} where (data_pid) not in (select data_pid from {1}) and date ='{2}'
+	""".format(gtable_data,gtable_detail,date)
+	try:
+		mycursor.execute(sql)
+		myresult = mycursor.fetchall()
+		print('[+] {} product to get detail'.format(len(myresult)))
+	except Exception as e:
+		print("[-] Error : {}".format(e))
+		print("[-] Mysql : {}".format(sql))
 	return myresult
 
 def run(root):
 	printo('INITIALIZING','center',True)
+	browser = init_browser(root)
 	print('[+] OK')
 	printo('STARTING','center',True)
+	print('[+] get product list')
 	datas = get_product_listDB()
 	if(len(datas) > 0):
-		browser = init_browser(root)
-		try:
-			for row in datas:
-				date,data_pid,shop_name,url,name = row
-				print('[+] {} - {}'.format(data_pid,name))
-				print('[+] {}'.format(url))
-				goto_URL(browser,url)
-				resp = get_page_detail(browser)
-				add_dbProduct(resp)
-		except Exception as e:
-			print e
+		for row in datas:
+			data_pid,url,name = row
+			print('[+] {} - {}'.format(data_pid,name))
+			print('[+] {}'.format(url))
+			goto_URL(browser,url)
+			resp = get_page_detail(browser)
+			add_dbProduct(resp)
 		browser.quit()
 	else:
 		print('[-] No data to get detail | get data list first.')
