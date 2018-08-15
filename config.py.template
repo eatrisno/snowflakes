@@ -1,15 +1,14 @@
-root = True
+root = False
 gdataname = 'data'
 gdrivername = "chromedriver"
-ghost="db.host.com"
-guser="user"
-gpasswd="pass"
-gdatabase="db"
-gport="3316"
-gtable_data = 'table1'
-gtable_detail = 'table2'
-gurl = 'https://toped.com/store'
-
+ghost="mynaworks.com"
+guser=""
+gpasswd=""
+gdatabase="sampleDB"
+gport="8989"
+gtable_data = 'product_data'
+gtable_detail = 'product_detail'
+gurl = 'https://tokopedia.com/gadzilastore'
 mac='https://chromedriver.storage.googleapis.com/2.41/chromedriver_mac64.zip'
 win='https://chromedriver.storage.googleapis.com/2.41/chromedriver_win32.zip'
 linux='https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip'

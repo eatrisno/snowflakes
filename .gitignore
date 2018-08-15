@@ -2,3 +2,5 @@ config.py
 chromedriver*
 *.pyc
 data/
+images/
+untitled*

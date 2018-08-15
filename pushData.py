@@ -107,7 +107,6 @@ def downloadImage(path,lists):
 		yield download(path,url)
 
 def doInputProduct(browser,datas):
-	browser.get('https://google.com')
 	iname,iimage,ietalase,imin_buy,iprice,icondition,idescription,ivideo,ivariant,iweight,iinsurance = datas
 	if(browser.title != 'Tambah Produk | Tokopedia'):
 		browser.get('https://www.tokopedia.com/product-add-v2.pl')
@@ -173,7 +172,7 @@ def run():
 		datas = get_product_list()[0]
 		if(len(datas) > 0): 
 			resp = prepare_input(datas)
-			resp = doInputProduct(browser,resp)
+			doInputProduct(browser,resp)
 			doUpdateStatus(datas)
 		else:
 			print('[-] No data to get detail | get data list first.')
