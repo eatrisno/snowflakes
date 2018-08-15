@@ -29,7 +29,6 @@ def initializaion():
 	printo('INIZIALIZATION','center',True)
 	info_OS()
 	check_internet()
-	init_driver()
 	os.system('clear')
 	return True
 
