@@ -24,11 +24,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 
-import config 
+from config import *
 
 curr_fld = os.path.dirname(os.path.abspath(__file__))
 
-gdata = curr_fld+'/'+gdata
+gdata = curr_fld+'/'+gdataname
 gdriver = curr_fld+"/"+gdrivername
 
 gmydb=mysql.connector.connect(
@@ -120,7 +120,7 @@ def init_driver():
 	else:
 		print "[-] Initialization Driver Failed"
 		return False
-	check_driver(driver,url)
+	check_driver(gdriver,url)
 	print("[+] Initialization Driver OK")
 	return True
 	
