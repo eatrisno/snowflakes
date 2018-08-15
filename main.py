@@ -59,6 +59,6 @@ def main():
 		else:
 			menu()
 			print('No Match')
-		print('Finish run : {}'.fromat(vinput))
+		print('Finish run : {}'.format(vinput))
 if __name__ == '__main__':
 	main()
