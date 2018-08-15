@@ -4,8 +4,6 @@ import getList as mod1
 import getDetail as mod2
 import pushData as mod3
 #Are You USER ?
-
-
 curr_fld = os.path.dirname(os.path.abspath(__file__))
 
 gdata = curr_fld+"/"+gdataname
@@ -22,7 +20,7 @@ def init_driver():
 		gdriver = curr_fld+'/chromedriver'
 	elif (ostype == "Windows"):
 		url = win
-		dgriver = curr_fld+'/chromedriver.exe'
+		gdriver = curr_fld+'/chromedriver.exe'
 	else:
 		print "[-] Initialization Driver Failed"
 		return False
