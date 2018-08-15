@@ -169,5 +169,6 @@ def run_sql(sql,t='put'):
 	except Exception as e:
 		print("[-] Error : {}".format(e))
 		print("[-] Mysql : {}".format(sql))
+	gmydb.close()
 	
 	
