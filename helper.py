@@ -31,13 +31,6 @@ curr_fld = os.path.dirname(os.path.abspath(__file__))
 gdata = curr_fld+'/'+gdataname
 gdriver = curr_fld+"/"+gdrivername
 
-gmydb=mysql.connector.connect(
-	host=ghost,
-	user=guser,
-	passwd=gpasswd,
-	database=gdatabase,
-	port=gport)
-
 def check_internet():
 	while(True):
 		try:
@@ -156,3 +149,25 @@ def goto_URL(browser,url):
 		browser.refresh()
 	new_url = browser.current_url
 	# print('[+] NOW : {}'.format(new_url))
+
+
+def run_sql(sql,t='put'):
+	gmydb=mysql.connector.connect(
+		host=ghost,
+		user=guser,
+		passwd=gpasswd,
+		database=gdatabase,
+		port=gport)
+	mycursor = gmydb.cursor()
+	try:
+		mycursor.execute(sql)
+		if t == 'get':
+			return mycursor.fetchall()
+		elif t == 'put':
+			gmydb.commit()
+		print("[+] {} Row affected.".format(mycursor.rowcount))
+	except Exception as e:
+		print("[-] Error : {}".format(e))
+		print("[-] Mysql : {}".format(sql))
+	
+	

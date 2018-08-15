@@ -35,9 +35,8 @@ def do_pagination(browser,direction):
 		return 'ERROR'
 
 def add_dbProduct(datas):
-	mycursor = gmydb.cursor()
-	sql_header = "INSERT INTO `{}` (`shop_name`,`date`,`data_pid`, `data_cid`, `name`, `url`, `image`, `price`) VALUES ".format(gtable_data)
 	mysql_rows = []
+	sql_header = "INSERT INTO `{}` (`shop_name`,`date`,`data_pid`, `data_cid`, `name`, `url`, `image`, `price`) VALUES ".format(gtable_data)
 	date = (datetime.datetime.now().strftime("%Y-%m-%d"))
 	for row in datas:
 		shop_name,data_pid,data_cid,name,price,url,image = row
@@ -45,9 +44,7 @@ def add_dbProduct(datas):
 	sql_footer = " ON DUPLICATE KEY UPDATE `name`=VALUES(`name`),`data_cid`=VALUES(`data_cid`),`url`=VALUES(`url`),`price`=VALUES(`price`)"
 	sql_body=','.join(mysql_rows)
 	sql = sql_header+sql_body+sql_footer
-	mycursor.execute(sql)
-	gmydb.commit()
-	print("[+] {} DATA record inserted.".format(mycursor.rowcount))
+	run_sql(sql)
 
 def get_product_list(browser):
 	resp = []

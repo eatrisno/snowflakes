@@ -51,21 +51,17 @@ def get_page_detail(browser):
 	product_insurance = get_var(html,'Asuransi')
 	return [var.encode('utf8').replace('\'','\\\'') for var in product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_condition,product_description,product_video,product_variant,product_weight,product_insurance]
 
+
 def update_status():
 	#not used yet
 	#UPDATE STATUS # 0 not uploaded # 1 uploaded # -1 removed
 	updated_status='1'
-	sql_update = ("UPDATE %s SET `status`='%s' WHERE `data_pid`='%s'"%(gtable_detail,updated_status,product_id))
-	try:
-		mycursor.execute(sql_update)
-		gmydb.commit()
-		print("[+] Status Updated | Row affected {}.".format(mycursor.rowcount))
-	except Exception as e:
-		print("[-] Error : {}".format(e))
-		print("[-] Mysql : {}".format(sql_update))
+	sql_update = ("""
+		UPDATE %s SET `status`='%s' WHERE `data_pid`='%s'
+		"""%(gtable_detail,updated_status,product_id))
+	run_sql(sql_update)
 
 def add_dbProduct(data):
-	mycursor = gmydb.cursor()
 	sql_header = """INSERT INTO `{}` (
 		`data_pid`,
 		`image`,
@@ -99,18 +95,10 @@ def add_dbProduct(data):
 		"""
 	sql_body=','.join(mysql_rows)
 	sql = sql_header+sql_body+sql_footer
-	try:
-		mycursor.execute(sql)
-		gmydb.commit()
-		print("[+] Status Uploaded | Row affected {} ".format(mycursor.rowcount))
-	except Exception as e:
-		print("[-] Error : {}".format(e))
-		print("[-] Mysql : {}".format(sql))
+	run_sql(sql)
 	
 
 def get_product_listDB():
-	myresult = []
-	mycursor = gmydb.cursor()
 	date = (datetime.datetime.now().strftime("%Y-%m-%d"))
 	sql = """
 	select a.`data_pid`,`url`,`name` from 
@@ -121,13 +109,7 @@ def get_product_listDB():
 	union
 	select `data_pid`,`url`,`name` from {0} where (data_pid) not in (select data_pid from {1}) and date ='{2}'
 	""".format(gtable_data,gtable_detail,date)
-	try:
-		mycursor.execute(sql)
-		myresult = mycursor.fetchall()
-		print('[+] {} product to get detail'.format(len(myresult)))
-	except Exception as e:
-		print("[-] Error : {}".format(e))
-		print("[-] Mysql : {}".format(sql))
+	myresult = run_sql(sql,'get')
 	return myresult
 
 def run():

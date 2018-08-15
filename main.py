@@ -6,6 +6,7 @@ from helper import init_browser
 from helper import check_internet
 import getList as mod1
 import getDetail as mod2
+import pushData as mod3
 #Are You USER ?
 root = True
 
@@ -22,6 +23,7 @@ def menu():
 	printo(" 2. Get Detail")
 	printo(" 3. Upload")
 	printo(" 4. Update")
+	printo(" 9. Automated")
 	printo(" 0. Exit")
 	printo('','center',True)
 
@@ -30,28 +32,34 @@ def initializaion():
 	info_OS()
 	check_internet()
 	os.system('clear')
-	return True
+	printo('FINISH INIZIALIZATION','center',True)
 
 def clear():
 	for i in range(10):
 		print('\n')
 
+def automated():
+	mod1.run()
+	mod2.run()
+
 def main():
 	printo('HI. THERE !','center',False) #True headless | false not headless
-	init = initializaion()
+	initializaion()
 	clear()
 	while(True):
 		menu()
 		vinput = raw_input("> ")
 		clear()
-		if( vinput == '1' ):
+		if  ( vinput == '1'):
 			mod1.run()
 		elif( vinput == '2'):
 			mod2.run()
 		elif( vinput == '3'):
-			commingSoon()
+			mod3.run()
 		elif( vinput == '4'):
 			commingSoon()
+		elif( vinput == '9'):
+			automated()
 		elif( vinput == '0'):
 			print('Bye..')
 			break
