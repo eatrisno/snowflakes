@@ -56,9 +56,6 @@ def main():
 		elif( vinput == '0'):
 			print('Bye..')
 			break
-		else:
-			menu()
-			print('No Match')
-		print('Finish run : {}'.format(vinput))
+		print('last run : {}'.format(vinput))
 if __name__ == '__main__':
 	main()
