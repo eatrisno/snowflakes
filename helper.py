@@ -29,13 +29,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 
-from config import *
-
-curr_fld = os.path.dirname(os.path.abspath(__file__))
-
-gdata = curr_fld+'/'+gdataname
-gdriver = curr_fld+"/"+gdrivername
-
 def check_internet():
 	while(True):
 		try:
@@ -103,24 +96,6 @@ def check_driver(name,url):
 	else:
 		print('[+] Driver | OK')
 
-def init_driver():
-	ostype = platform.system()
-	print('[+] Checking Driver Type | {}'.format(ostype))
-	if (ostype == "Darwin"):
-		url = mac
-		gdriver = curr_fld+'/chromedriver'
-	elif (ostype == 'Linux' ):
-		url = linux
-		gdriver = curr_fld+'/chromedriver'
-	elif (ostype == "Windows"):
-		url = win
-		dgriver = curr_fld+'/chromedriver.exe'
-	else:
-		print "[-] Initialization Driver Failed"
-		return False
-	check_driver(gdriver,url)
-	print("[+] Initialization Driver OK")
-	return True
 	
 
 def init_browser(headless=True):
