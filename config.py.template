@@ -1,0 +1,15 @@
+root = True
+gdataname = 'data'
+gdrivername = "chromedriver"
+ghost="db.host.com"
+guser="user"
+gpasswd="pass"
+gdatabase="db"
+gport="3316"
+gtable_data = 'table1'
+gtable_detail = 'table2'
+gurl = 'https://toped.com/store'
+
+mac='https://chromedriver.storage.googleapis.com/2.41/chromedriver_mac64.zip'
+win='https://chromedriver.storage.googleapis.com/2.41/chromedriver_win32.zip'
+linux='https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip'
