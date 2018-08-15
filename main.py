@@ -8,7 +8,6 @@ import getList as mod1
 import getDetail as mod2
 import pushData as mod3
 #Are You USER ?
-root = True
 
 def commingSoon():
 	print("Comming soon..")
@@ -32,7 +31,6 @@ def initializaion():
 	info_OS()
 	check_internet()
 	init_driver()
-	gbrowser = init_browser(root)
 	printo('FINISH INIZIALIZATION','center',True)
 
 def clear():

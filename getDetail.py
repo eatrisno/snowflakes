@@ -51,16 +51,6 @@ def get_page_detail(browser):
 	product_insurance = get_var(html,'Asuransi')
 	return [var.encode('utf8').replace('\'','\\\'') for var in product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_condition,product_description,product_video,product_variant,product_weight,product_insurance]
 
-
-def update_status():
-	#not used yet
-	#UPDATE STATUS # 0 not uploaded # 1 uploaded # -1 removed
-	updated_status='1'
-	sql_update = ("""
-		UPDATE %s SET `status`='%s' WHERE `data_pid`='%s'
-		"""%(gtable_detail,updated_status,product_id))
-	run_sql(sql_update)
-
 def add_dbProduct(data):
 	sql_header = """INSERT INTO `{}` (
 		`data_pid`,
@@ -105,9 +95,9 @@ def get_product_listDB():
 		(select `data_pid`,`name`,`price`,`url` from {0} where date='{2}') as a,
 		(select `data_pid`,`price` from {1} ) as b
 	where b.`data_pid`=a.`data_pid`
-		and b.`price` != a.`price`
 	union
 	select `data_pid`,`url`,`name` from {0} where (data_pid) not in (select data_pid from {1}) and date ='{2}'
+	ORDER BY RAND() LIMIT 1
 	""".format(gtable_data,gtable_detail,date)
 	myresult = run_sql(sql,'get')
 	return myresult
@@ -119,9 +109,8 @@ def run():
 	print('[+] Get product list')
 	while(True):
 		datas = get_product_listDB()
-		if(len(datas) > 0):
-			new_datas = random.sample(datas, len(datas))
-			data_pid,url,name = new_datas[0]
+		if(len(datas) > 0): 
+			data_pid,url,name = datas[0]
 			print('[+] {} - {}'.format(data_pid,name))
 			print('[+] {}'.format(url))
 			goto_URL(browser,url)
