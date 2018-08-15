@@ -31,7 +31,8 @@ def initializaion():
 	printo('INIZIALIZATION','center',True)
 	info_OS()
 	check_internet()
-	os.system('clear')
+	init_driver()
+	gbrowser = init_browser(root)
 	printo('FINISH INIZIALIZATION','center',True)
 
 def clear():

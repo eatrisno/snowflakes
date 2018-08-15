@@ -114,7 +114,6 @@ def get_product_listDB():
 
 def run():
 	#INITIALIZING
-	browser = init_browser(root)
 	printo('STARTING','center',True)
 	print('[+] Get product list')
 	while(True):
@@ -131,7 +130,6 @@ def run():
 		else:
 			print('[-] No data to get detail | get data list first.')
 			break
-	browser.quit()
 	printo('FINISH','center',True)
 
 def main():
