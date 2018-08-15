@@ -24,22 +24,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 
+import config 
+
 curr_fld = os.path.dirname(os.path.abspath(__file__))
-root = True
-driver = "chromedriver"
-gdriver = curr_fld+"/"+driver
-gdata = curr_fld+"/data"
-ghost="pixel.mynaworks.com"
-guser="dev"
-gpasswd="dev"
-gdatabase="sampleDB"
-gport="8989"
-gtable_data = 'product_data'
-gtable_detail = 'product_detail'
-gurl = 'https://tokopedia.com/gadzilastore'
-mac='https://chromedriver.storage.googleapis.com/2.41/chromedriver_mac64.zip'
-win='https://chromedriver.storage.googleapis.com/2.41/chromedriver_win32.zip'
-linux='https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip'
+
+gdata = curr_fld+'/'+gdata
+gdriver = curr_fld+"/"+gdrivername
 
 gmydb=mysql.connector.connect(
 	host=ghost,
