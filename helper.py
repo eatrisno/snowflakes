@@ -1,3 +1,7 @@
+#EKO APRILI TRISNO
+#EKO APRILITRISNO
+#EAPRILITRISNO@gmail.com
+
 import os
 import re
 import sys
@@ -5,6 +9,7 @@ import csv
 import math
 import json
 import time
+import urllib
 import signal
 import shutil
 import random
@@ -128,8 +133,8 @@ def init_browser(headless=True):
 		browser.implicitly_wait(20)
 		print('[+] Initialization Browser OK')
 		return browser
-	except:
-		print('[-] Initialization Browser Failed')
+	except Exception as e:
+		print('[-] Initialization Browser Failed | E: {}'.format(e))
 		return False
 
 def delay(delay=0):
