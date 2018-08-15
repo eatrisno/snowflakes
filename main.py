@@ -1,32 +1,13 @@
-from config import *
-from helper import *
+import os
+from helper import init_driver
+from helper import printo
+from helper import info_OS
+from helper import init_browser
+from helper import check_internet
 import getList as mod1
 import getDetail as mod2
 import pushData as mod3
 #Are You USER ?
-curr_fld = os.path.dirname(os.path.abspath(__file__))
-
-gdata = curr_fld+"/"+gdataname
-gdriver = curr_fld+"/"+gdrivername
-print gdata
-def init_driver():
-	ostype = platform.system()
-	print('[+] Checking Driver Type | {}'.format(ostype))
-	if (ostype == "Darwin"):
-		url = mac
-		gdriver = curr_fld+'/chromedriver'
-	elif (ostype == 'Linux' ):
-		url = linux
-		gdriver = curr_fld+'/chromedriver'
-	elif (ostype == "Windows"):
-		url = win
-		gdriver = curr_fld+'/chromedriver.exe'
-	else:
-		print "[-] Initialization Driver Failed"
-		return False
-	check_driver(gdriver,url)
-	print("[+] Initialization Driver OK")
-	return True
 
 def commingSoon():
 	print("Comming soon..")
