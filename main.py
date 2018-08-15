@@ -1,4 +1,3 @@
-import os
 from config import *
 from helper import *
 import getList as mod1
@@ -9,9 +8,9 @@ import pushData as mod3
 
 curr_fld = os.path.dirname(os.path.abspath(__file__))
 
-gdata = curr_fld+'/'+gdataname
+gdata = curr_fld+"/"+gdataname
 gdriver = curr_fld+"/"+gdrivername
-
+print gdata
 def init_driver():
 	ostype = platform.system()
 	print('[+] Checking Driver Type | {}'.format(ostype))

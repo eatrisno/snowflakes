@@ -95,7 +95,6 @@ def check_driver(name,url):
 		os.remove(chromedriver_name)
 	else:
 		print('[+] Driver | OK')
-
 	
 
 def init_browser(headless=True):
