@@ -1,4 +1,4 @@
-root = False
+root = True
 gdataname = 'data'
 gdrivername = "chromedriver"
 ghost="mynaworks.com"

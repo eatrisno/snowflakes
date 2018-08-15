@@ -91,16 +91,19 @@ def add_dbProduct(data):
 def get_product_listDB():
 	date = (datetime.datetime.now().strftime("%Y-%m-%d"))
 	sql = """
-	select a.`data_pid`,`url`,`name` from 
-		(select `data_pid`,`name`,`price`,`url` from {0} where date='{2}') as a,
-		(select `data_pid`,`price` from {1} ) as b
-	where b.`data_pid`=a.`data_pid`
-	union
 	select `data_pid`,`url`,`name` from {0} where (data_pid) not in (select data_pid from {1}) and date ='{2}'
 	ORDER BY RAND() LIMIT 1
 	""".format(gtable_data,gtable_detail,date)
 	myresult = run_sql(sql,'get')
 	return myresult
+	
+	# select a.`data_pid`,`url`,`name` from 
+	# 	(select `data_pid`,`name`,`price`,`url` from {0} where date='{2}') as a,
+	# 	(select `data_pid`,`price` from {1} ) as b
+	# where b.`data_pid`=a.`data_pid` 
+	# and
+	# b.`price` != a.`price`
+	# union
 
 def run():
 	#INITIALIZING
