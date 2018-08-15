@@ -149,8 +149,8 @@ def init_browser(headless=True):
 		print('[-] Initialization Browser Failed')
 		return False
 
-def delay(delay=10):
-	extraTime = randint(0,20)
+def delay(delay=0):
+	extraTime = randint(0,5)
 	newDelay = extraTime + delay
 	strDelay= str(datetime.timedelta(seconds=newDelay))
 	print('[@] Sleep - {}'.format(strDelay))
@@ -165,4 +165,4 @@ def goto_URL(browser,url):
 	else:
 		browser.refresh()
 	new_url = browser.current_url
-	print('[+] NOW :{}'.format(new_url))
+	# print('[+] NOW : {}'.format(new_url))
