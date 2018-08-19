@@ -35,6 +35,7 @@ def get_var(html,vtype):
 
 def get_page_detail(browser):
 	html = BeautifulSoup(browser.page_source,'html.parser')
+	product_url = html.find(id='product-url').get('value').strip()
 	shop_id = html.find(id='shop-id').get('value').strip()
 	product_id = html.find(id='product-id').get('value').strip()
 	product_img_obj = html.find_all("div", {"class": re.compile("^content-img slick-slide")})
@@ -49,10 +50,11 @@ def get_page_detail(browser):
 	product_variant = json.dumps(get_variant(browser))
 	product_weight = html.find(class_='rvm-shipping-content').text.strip()
 	product_insurance = get_var(html,'Asuransi')
-	return [var.encode('utf8').replace('\'','\\\'') for var in product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_condition,product_description,product_video,product_variant,product_weight,product_insurance]
+	return [var.encode('utf8').replace('\'','\\\'') for var in product_url,product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_condition,product_description,product_video,product_variant,product_weight,product_insurance]
 
 def add_dbProduct(data):
 	sql_header = """INSERT INTO `{}` (
+		`url`,
 		`data_pid`,
 		`image`,
 		`name`,
@@ -66,10 +68,10 @@ def add_dbProduct(data):
 		`weight`,
 		`insurance`) VALUES """.format(gtable_detail)
 	mysql_rows = []
-	product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_condition,product_description,product_video,product_variant,product_weight,product_insurance = data
+	product_url,product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_condition,product_description,product_video,product_variant,product_weight,product_insurance = data
 	mysql_rows.append(
-		"""('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}')
-		""".format(product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_condition,product_description,product_video,product_variant,product_weight,product_insurance))
+		"""('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}')
+		""".format(product_url,product_id,product_img,product_name,product_menu,product_min_buy,product_price,product_condition,product_description,product_video,product_variant,product_weight,product_insurance))
 	sql_footer = """ ON DUPLICATE KEY UPDATE
 		`image`=VALUES(`image`),
 		`name`=VALUES(`name`),

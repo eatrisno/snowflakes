@@ -107,6 +107,8 @@ def init_driver():
 	ostype = platform.system()
 	print('[+] Checking Driver Type | {}'.format(ostype))
 	if (ostype == "Darwin"):
+		os.system('pkill chromedriver')
+		os.system('pkill Google Chrome')
 		url = mac
 		gdriver = curr_fld+'/chromedriver'
 	elif (ostype == 'Linux' ):

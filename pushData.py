@@ -159,8 +159,11 @@ def prepare_input(datas):
 
 
 def doUpdateStatus(datas):
+	status = '1'
 	data_pid,name,image,etalase,min_buy,price,condition,description,video,variant,weight,insurance = datas
-	sql = """UPDATE {0} SET upload_status='{1}' where `data_pid`={2}""".format(gtable_detail,'1',data_pid)
+	sql = """
+	UPDATE {0} SET upload_status='{1}' where `data_pid`={2}
+	""".format(gtable_detail,status,data_pid)
 	run_sql(sql,'put')
 
 def run():
@@ -181,10 +184,7 @@ def run():
 	printo('FINISH','center',True) 
 
 def main():
-	root = False
-	browser = init_browser(root)
-	sample = [u'Tempered Glass Samsung Galaxy Note 3 Note3 N9000 Antigores Screenguard', [u'/Volumes/caddy/liko/snowflakes/images/153610_dae57fcc-94f5-11e4-ac11-598e4908a8c2.jpg'], u'OREN Tempered Glass', 1, 25000, u'Baru', u'==== OREN TEMPERED GLASS ====\n\nSpec :\n- Tebal 0.26mm, 2.5D (super tipis gan)\n- Sensitive Delicate Touch (dijamin tetap sensitif layarnya gan )\n- Anti-shatter Film (klo pecah, kaca tidak tajam )\n- Oleophobic Coating (anti sidik jari / gampang dibersihkan)\n\nKelengkapan yang didapat:\n* Kaca Tempered untuk layar depan\n* Wipes / kain pembersih basah dgn alkohol\n* Wipes / kain pembersih kering\n* Guide Stiker untuk mengangkat kotoran/debu', [u''], u'{}', u'100gr', u'Opsional']
-	doInputProduct(browser,sample)
-	doUpdateStatus(sample)
+	run()
+	
 if __name__ == '__main__':
 	main()
